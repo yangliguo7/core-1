@@ -35,6 +35,10 @@ const commit = spawnSync('git', ['rev-parse', '--short=7', 'HEAD'])
 const { values, positionals: targets } = parseArgs({
   allowPositionals: true,
   options: {
+    rollup: {
+      type: 'boolean',
+      short: 'r',
+    },
     formats: {
       type: 'string',
       short: 'f',
@@ -69,6 +73,7 @@ const { values, positionals: targets } = parseArgs({
 })
 
 const {
+  rollup: useRollup,
   formats,
   all: buildAllMatching,
   devOnly,
@@ -170,28 +175,22 @@ async function build(target) {
     await fs.rm(`${pkgDir}/dist`, { recursive: true })
   }
 
-  const env =
-    (pkg.buildOptions && pkg.buildOptions.env) ||
-    (devOnly ? 'development' : 'production')
+  const env = {
+    ...process.env,
+    TARGET: target,
+    COMMIT: commit,
+    NODE_ENV:
+      (pkg.buildOptions && pkg.buildOptions.env) ||
+      (devOnly ? 'development' : 'production'),
+    ...(formats ? { FORMATS: formats } : null),
+    ...(prodOnly ? { PROD_ONLY: true } : null),
+    ...(sourceMap ? { SOURCE_MAP: true } : null),
+  }
 
-  await exec(
-    'rollup',
-    [
-      '-c',
-      '--environment',
-      [
-        `COMMIT:${commit}`,
-        `NODE_ENV:${env}`,
-        `TARGET:${target}`,
-        formats ? `FORMATS:${formats}` : ``,
-        prodOnly ? `PROD_ONLY:true` : ``,
-        sourceMap ? `SOURCE_MAP:true` : ``,
-      ]
-        .filter(Boolean)
-        .join(','),
-    ],
-    { stdio: 'inherit' },
-  )
+  await exec(useRollup ? 'rollup' : 'rolldown', ['-c'], {
+    stdio: 'inherit',
+    env,
+  })
 }
 
 /**

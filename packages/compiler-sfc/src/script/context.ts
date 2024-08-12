@@ -17,11 +17,11 @@ export class ScriptCompileContext {
   scriptAst: Program | null
   scriptSetupAst: Program | null
 
-  source = this.descriptor.source
-  filename = this.descriptor.filename
-  s = new MagicString(this.source)
-  startOffset = this.descriptor.scriptSetup?.loc.start.offset
-  endOffset = this.descriptor.scriptSetup?.loc.end.offset
+  source: string
+  filename: string
+  s: MagicString
+  startOffset: number | undefined
+  endOffset: number | undefined
 
   // import / type analysis
   scope?: TypeScope
@@ -85,6 +85,12 @@ export class ScriptCompileContext {
     const scriptLang = script && script.lang
     const scriptSetupLang = scriptSetup && scriptSetup.lang
 
+    this.source = descriptor.source
+    this.filename = descriptor.filename
+    this.s = new MagicString(descriptor.source)
+    this.startOffset = descriptor.scriptSetup?.loc.start.offset
+    this.endOffset = descriptor.scriptSetup?.loc.end.offset
+
     this.isJS =
       scriptLang === 'js' ||
       scriptLang === 'jsx' ||
@@ -97,7 +103,7 @@ export class ScriptCompileContext {
       scriptSetupLang === 'tsx'
 
     const customElement = options.customElement
-    const filename = this.descriptor.filename
+    const filename = descriptor.filename
     if (customElement) {
       this.isCE =
         typeof customElement === 'boolean'
