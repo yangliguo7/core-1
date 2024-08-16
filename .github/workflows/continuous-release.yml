@@ -1,19 +1,14 @@
-# upload built packages as artifacts for faster ecosystem-ci
-name: upload-built-packages
+name: 'continuous release to pkg.pr.new'
 
 on:
-  workflow_run:
-    workflows: ['ci']
-    branches: [main, minor]
-    types:
-      - completed
+  push:
+    branches:
+      - test-pkg-pr-new
 
 jobs:
-  build-and-upload:
+  build-and-release:
     if: >
-      github.repository == 'vuejs/core' &&
-      github.event.workflow_run.event == 'push' &&
-      github.event.workflow_run.conclusion == 'success'
+      github.repository == 'vuejs/core'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -35,8 +30,5 @@ jobs:
       - name: Build
         run: pnpm build --withTypes
 
-      - name: Upload
-        uses: actions/upload-artifact@v4
-        with:
-          name: packages
-          path: packages/*/dist/*
+      - name: Release
+        run: npx pkg-pr-new publish './packages/*'
