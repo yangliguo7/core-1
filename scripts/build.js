@@ -125,6 +125,7 @@ async function run() {
 async function buildAll(targets) {
   const start = performance.now()
   const all = []
+  let count = 0
   for (const t of targets) {
     const configs = createConfigsForTarget(t)
     if (configs) {
@@ -138,14 +139,19 @@ async function buildAll(targets) {
               })
             }),
           ),
-        ).then(files =>
-          files.forEach(f => console.log(pico.gray('built: ') + pico.green(f))),
-        ),
+        ).then(files => {
+          files.forEach(f => {
+            count++
+            console.log(pico.gray('built: ') + pico.green(f))
+          })
+        }),
       )
     }
   }
   await Promise.all(all)
-  console.log(`\nDone in ${(performance.now() - start).toFixed(2)}ms.`)
+  console.log(
+    `\n${count} files built in ${(performance.now() - start).toFixed(2)}ms.`,
+  )
 }
 
 /**
