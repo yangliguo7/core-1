@@ -219,7 +219,7 @@ export class VueElement
   /**
    * @internal
    */
-  _nonce: string | undefined = this._def.nonce
+  _nonce: string | undefined
 
   private _connected = false
   private _resolved = false
@@ -248,6 +248,7 @@ export class VueElement
     private _createApp: CreateAppFunction<Element> = createApp,
   ) {
     super()
+    this._nonce = _def.nonce
     if (this.shadowRoot && _createApp !== createApp) {
       this._root = this.shadowRoot
     } else {

@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "node scripts/dev.js",
     "build": "node scripts/build.js",
+    "build-rollup": "node scripts/build-with-rollup.js",
     "build-dts": "tsc -p tsconfig.build-browser.json && tsc -p tsconfig.build-node.json && rollup -c rollup.dts.config.js",
     "clean": "rimraf --glob packages/*/dist temp .eslintcache",
     "size": "run-s \"size-*\" && tsx scripts/usage-size.ts",
@@ -61,6 +62,7 @@
   "devDependencies": {
     "@babel/parser": "catalog:",
     "@babel/types": "catalog:",
+    "@rolldown/plugin-node-polyfills": "^1.0.0",
     "@rollup/plugin-alias": "^5.1.0",
     "@rollup/plugin-commonjs": "^26.0.1",
     "@rollup/plugin-json": "^6.1.0",
@@ -94,6 +96,7 @@
     "pug": "^3.0.3",
     "puppeteer": "~23.3.0",
     "rimraf": "^6.0.1",
+    "rolldown": "0.13.2",
     "rollup": "^4.21.2",
     "rollup-plugin-dts": "^6.1.1",
     "rollup-plugin-esbuild": "^6.1.1",
