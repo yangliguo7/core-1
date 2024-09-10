@@ -5,7 +5,9 @@ import { isolatedDeclaration } from 'oxc-transform'
 import { rollup } from 'rollup'
 import picocolors from 'picocolors'
 
-fs.rmSync('temp/packages', { recursive: true })
+if (fs.existsSync('temp/packages')) {
+  fs.rmSync('temp/packages', { recursive: true })
+}
 
 let errs = ''
 let start = performance.now()
