@@ -98,19 +98,7 @@ async function run() {
     await buildAll(resolvedTargets)
     if (size) await checkAllSizes(resolvedTargets)
     if (buildTypes) {
-      await exec(
-        'pnpm',
-        [
-          'run',
-          'build-dts',
-          ...(targets.length
-            ? ['--environment', `TARGETS:${resolvedTargets.join(',')}`]
-            : []),
-        ],
-        {
-          stdio: 'inherit',
-        },
-      )
+      await import('./build-types.js')
     }
   } finally {
     removeCache()

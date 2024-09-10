@@ -306,7 +306,7 @@ export class VueElement
     }
   }
 
-  private _setParent(parent = this._parent) {
+  private _setParent(parent: VueElement | undefined = this._parent): void {
     if (parent) {
       this._instance!.parent = parent._instance
       this._instance!.provides = parent._instance!.provides
